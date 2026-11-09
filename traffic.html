@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>kelly`s mart Traffic System</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #eaf0f5;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 450px;
+    margin: auto;
+}
+
+h1 {
+    color: #073b70;
+}
+
+.speed {
+    font-size: 45px;
+    color: green;
+    font-weight: bold;
+}
+
+button {
+    background: #073b70;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#alert {
+    color: red;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>STU SMART TRAFFIC</h1>
+
+<p>Traffic Monitoring System</p>
+
+<h2>Vehicle Speed</h2>
+
+<div class="speed">
+<span id="speed">0</span> km/h
+</div>
+
+<p id="status">Waiting for GPS...</p>
+
+<p id="alert"></p>
+
+<p id="location">Location: Not available</p>
+
+<button onclick="startMonitoring()">
+START MONITORING
+</button>
+
+</div>
+
+<script>
+
+const speedLimit = 80;
+
+function startMonitoring() {
+
+    if (!navigator.geolocation) {
+        alert("GPS is not supported by this browser.");
+        return;
+    }
+
+    document.getElementById("status").innerHTML =
+    "Monitoring started...";
+
+    navigator.geolocation.watchPosition(
+
+        function(position) {
+
+            let speed = position.coords.speed;
+
+            if (speed === null) {
+                document.getElementById("status").innerHTML =
+                "Speed data unavailable.";
+                return;
+            }
+
+            speed = speed * 3.6;
+
+            document.getElementById("speed").innerHTML =
+            speed.toFixed(1);
+
+            document.getElementById("location").innerHTML =
+            "Latitude: " + position.coords.latitude.toFixed(5) +
+            "<br>Longitude: " +
+            position.coords.longitude.toFixed(5);
+
+            if (speed > speedLimit) {
+
+                document.getElementById("alert").innerHTML =
+                "WARNING: SPEED LIMIT EXCEEDED!";
+
+            } else {
+
+                document.getElementById("alert").innerHTML =
+                "Speed is within the set limit.";
+
+            }
+
+        },
+
+        function(error) {
+            document.getElementById("status").innerHTML =
+            "GPS permission or location error.";
+        },
+
+        {
+            enableHighAccuracy: true
+        }
+
+    );
+
+}
+
+</script>
+
+</body>
+</html>
